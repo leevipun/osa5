@@ -1,34 +1,59 @@
 import React, { useState } from "react";
-import login from "../services/loginservice";
+import axios from "axios";
 
-const Loginform = ({user, setUser}) => {
+const Loginform = ({setToken, setUser}) => {
+  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState('');
 
-    const [password, setPassword] = useState('')
-    const [username, setUsername] = useState('')
+  const handlesubmit = async () => {
+    try {
+      const response = await axios.post("http://localhost:3003/api/login", {
+        username,
+        password,
+      });
 
-    const handlesubmit = async () => {
-        const response = await loginaxios.login(username, password)
-        const user = response.filter(!token)
+      if (response.status === 200) {
+        const { token, username, name } = response.data;
+        console.log("Login successful!");
+        console.log("Token:", token);
+        console.log("Username:", username);
+        console.log("Name:", name);
+        setToken(token)
+        setUser(username)
+      } else {
+        console.error("Login failed. Server returned an error.");
+      }
+    } catch (error) {
+      console.error("Login failed. An error occurred:", error);
     }
+  };
 
-return (
+  return (
     <div>
-        <h1>
-            Log in to application
-        </h1>
-        <div>
+      <h1>Log in to application</h1>
+      <div>
         <label>Username: </label>
-        <input type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} />
-        </div>
-        <div>
+        <input
+          type="text"
+          placeholder="Username"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+        />
+      </div>
+      <div>
         <label>Password: </label>
-        <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
-        </div>
-        <div>
-            <button onClick={() => handlesubmit}>Log in</button>
-        </div>
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+      </div>
+      <div>
+        <button onClick={() => handlesubmit()}>Log in</button>
+      </div>
     </div>
-);
-}
+  );
+};
 
 export default Loginform;
