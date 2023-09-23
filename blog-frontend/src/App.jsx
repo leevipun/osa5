@@ -5,17 +5,16 @@ import Footer from "./components/Footer";
 import noteService from "./services/blogs";
 import loginService from "./services/login";
 import Notification from "./components/Notification";
+import NoteForm from "./components/noteForm";
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
-  const [newBlogTitle, setNewBlogTitle] = useState("");
-  const [newBlogUrl, setNewBlogUrl] = useState("");
-  const [newBlogAuthor, setNewBlogAuthor] = useState("");
   const [errorMessage, setErrorMessage] = useState(null);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
   const [notification, setNotification] = useState(null);
+  const [newBlogForm, setNewBlogForm] = useState(false);
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem("loggedNoteappUser");
@@ -34,27 +33,6 @@ const App = () => {
       });
     }
   }, [user]);
-
-  const addNote = (event) => {
-    event.preventDefault();
-    const blogObeject = {
-      title: newBlogTitle,
-      author: newBlogAuthor,
-      url: newBlogUrl,
-      likes: 0,
-    };
-
-    noteService.create(blogObeject).then((returnedNote) => {
-      setBlogs(blogs.concat(returnedNote));
-      setNotification(`${newBlogTitle} By: ${newBlogAuthor} is added`);
-      setTimeout(() => {
-        setNotification(null);
-      }, 3000);
-      setNewBlogTitle("");
-      setNewBlogUrl("");
-      setNewBlogAuthor("");
-    });
-  };
 
   const handleLogginOut = () => {
     setUser(null);
@@ -116,33 +94,6 @@ const App = () => {
     </form>
   );
 
-  const noteForm = () => (
-    <form onSubmit={addNote}>
-      <div>
-        <lable>Title: </lable>
-        <input
-          value={newBlogTitle}
-          onChange={(e) => setNewBlogTitle(e.target.value)}
-        />
-      </div>
-      <div>
-        <label>URL: </label>
-        <input
-          value={newBlogUrl}
-          onChange={(e) => setNewBlogUrl(e.target.value)}
-        />
-      </div>
-      <div>
-        <label>Author: </label>
-        <input
-          value={newBlogAuthor}
-          onChange={(e) => setNewBlogAuthor(e.target.value)}
-        />
-      </div>
-      <button type="submit">save</button>
-    </form>
-  );
-
   return (
     <div>
       <h1>Notes</h1>
@@ -153,7 +104,17 @@ const App = () => {
         <div>
           <p>{user.name} logged in</p>{" "}
           <button onClick={handleLogginOut}>Log out</button>
-          {noteForm()}
+          <div>
+            <button onClick={() => setNewBlogForm(true)}>Add a new blog</button>
+          </div>
+          {newBlogForm && (
+            <NoteForm
+              setNewBlogForm={setNewBlogForm}
+              setBlogs={setBlogs}
+              setNotification={setNotification}
+              blogs={blogs}
+            />
+          )}
           {blogs.map((blog) => (
             <Note note={blog} />
           ))}
