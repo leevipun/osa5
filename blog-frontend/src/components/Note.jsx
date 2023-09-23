@@ -1,6 +1,7 @@
 import { useState } from "react";
+import noteServices from "../services/blogs";
 
-const Note = ({ note }) => {
+const Note = ({ note, blogs, setBlogs }) => {
   const [showAll, setShowAll] = useState(false);
   const [buttonName, setButtonName] = useState("View");
 
@@ -11,6 +12,34 @@ const Note = ({ note }) => {
     borderWidth: 1,
     marginBottom: 5,
     marginTop: 5,
+  };
+
+  const handleLikeing = async (event) => {
+    const updatedBlog = {
+      title: note.title,
+      author: note.author,
+      url: note.url,
+      likes: note.likes + 1,
+    };
+
+    // Optimistically update the UI
+    setBlogs(
+      blogs.map((blog) =>
+        blog.id === note.id ? { ...blog, likes: updatedBlog.likes } : blog
+      )
+    );
+
+    // Send the network request
+    try {
+      const response = await noteServices.update(note.id, updatedBlog);
+    } catch (error) {
+      console.log(error);
+      setBlogs(
+        blogs.map((blog) =>
+          blog.id === note.id ? { ...blog, likes: note.likes } : blog
+        )
+      );
+    }
   };
 
   const handleView = () => {
@@ -34,6 +63,9 @@ const Note = ({ note }) => {
           <p>{`URL: ${note.url}`}</p>
           <p>{`Likes: ${note.likes}`}</p>
           <p>{`User: ${note.user.username}`}</p>
+          <div>
+            <button onClick={() => handleLikeing(note.id)}>Like</button>
+          </div>
         </div>
       )}
     </div>

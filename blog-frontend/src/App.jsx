@@ -116,7 +116,7 @@ const App = () => {
             />
           )}
           {blogs.map((blog) => (
-            <Note note={blog} />
+            <Note note={blog} blogs={blogs} setBlogs={setBlogs} />
           ))}
         </div>
       )}
