@@ -92,7 +92,7 @@ const Note = ({ note, blogs, setBlogs, user }) => {
   }, []);
 
   return (
-    <div style={blogStyle}>
+    <div style={blogStyle} className="note">
       <div>
         <p>{`${note.title} By: ${note.author}`}</p>
         <button onClick={() => handleView()}>{buttonName}</button>
