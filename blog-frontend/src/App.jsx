@@ -21,6 +21,7 @@ const App = () => {
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON);
       setUser(user);
+      console.log(user);
       noteService.setToken(`${user.token}`);
     }
   }, []);
@@ -56,6 +57,7 @@ const App = () => {
       setUser(user);
       setUsername("");
       setPassword("");
+      console.log(user.id);
       setNotification(`Wellcome back ${username}!`);
       setTimeout(() => {
         setNotification(null);
@@ -116,7 +118,7 @@ const App = () => {
             />
           )}
           {blogs.map((blog) => (
-            <Note note={blog} blogs={blogs} setBlogs={setBlogs} />
+            <Note note={blog} blogs={blogs} setBlogs={setBlogs} user={user} />
           ))}
         </div>
       )}

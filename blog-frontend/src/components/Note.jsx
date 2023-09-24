@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import noteServices from "../services/blogs";
 
-const Note = ({ note, blogs, setBlogs }) => {
+const Note = ({ note, blogs, setBlogs, user }) => {
   const [showAll, setShowAll] = useState(false);
   const [buttonName, setButtonName] = useState("View");
+  const [acces, setAcces] = useState(false);
 
   const blogStyle = {
     paddingTop: 10,
@@ -42,8 +43,35 @@ const Note = ({ note, blogs, setBlogs }) => {
     }
   };
 
+  const CanDelete = () => {
+    console.log(note.user.id);
+    console.log(user.id);
+    if (note.user.id && user.id) {
+      if (note.user.id === user.id) {
+        setAcces(true);
+        console.log(note.user.id);
+        console.log(user.id);
+      } else {
+        setAcces(false);
+      }
+    }
+  };
+
+  const handleDelete = () => {
+    if (
+      window.confirm(
+        `You are deleting ${note.name} By: ${note.author}. Are you sure you want to continue?`
+      )
+    ) {
+      noteServices.deletion(note.id);
+    } else {
+      return;
+    }
+  };
+
   const handleView = () => {
     if (buttonName === "View") {
+      CanDelete();
       setShowAll(true);
       setButtonName("Hide");
     } else {
@@ -51,6 +79,17 @@ const Note = ({ note, blogs, setBlogs }) => {
       setButtonName("View");
     }
   };
+  useEffect(() => {
+    const sortItemsByLikes = () => {
+      const sortedItems = [...blogs];
+      sortedItems.sort((a, b) => {
+        return b.likes - a.likes;
+      });
+      setBlogs(sortedItems);
+    };
+
+    sortItemsByLikes();
+  }, []);
 
   return (
     <div style={blogStyle}>
@@ -65,6 +104,11 @@ const Note = ({ note, blogs, setBlogs }) => {
           <p>{`User: ${note.user.username}`}</p>
           <div>
             <button onClick={() => handleLikeing(note.id)}>Like</button>
+          </div>
+          <div>
+            {acces && (
+              <button onClick={() => handleDelete(note.id)}>Delete</button>
+            )}
           </div>
         </div>
       )}
