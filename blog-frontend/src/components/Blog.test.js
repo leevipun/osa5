@@ -1,8 +1,11 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import "@testing-library/jest-dom"; // Import toBeInTheDocument
-
 import Note from "./Note";
+import NoteForm from "./noteForm";
+import noteServices from "../services/blogs";
+
+jest.mock("../services/blogs");
 
 describe("Note Component", () => {
   const sampleNote = {
@@ -64,10 +67,8 @@ describe("Note Component", () => {
 
     const viewButton = screen.getByText("View");
 
-    // Click the 'View' button
     userEvent.click(viewButton);
 
-    // Check that the expanded content is rendered
     expect(screen.getByText(`URL: ${sampleNote.url}`)).toBeInTheDocument();
     expect(screen.getByText(`Likes: ${sampleNote.likes}`)).toBeInTheDocument();
     expect(
@@ -98,5 +99,68 @@ describe("Note Component", () => {
     // Click the 'Hide' button and check that the text changes back to 'View'
     userEvent.click(screen.getByText("Hide"));
     expect(screen.getByText("View")).toBeInTheDocument();
+  });
+  it("calls createNote with the correct data", async () => {
+    const createNote = jest.fn();
+    const setNewBlogForm = jest.fn();
+    const setBlogs = jest.fn();
+    const setNotification = jest.fn();
+    const blogs = [];
+
+    // Configure the mock implementation for create function
+    noteServices.create.mockImplementation((data) => {
+      createNote(data);
+      return Promise.resolve(data); // Mock a successful response
+    });
+
+    // Render the NoteForm component
+    render(
+      <NoteForm
+        createNote={createNote}
+        setNewBlogForm={setNewBlogForm}
+        setBlogs={setBlogs}
+        setNotification={setNotification}
+        user={{ id: 1 }}
+        blogs={blogs}
+      />
+    );
+
+    // Simulate user input
+    userEvent.type(screen.getByPlaceholderText("Title"), "Test Blog");
+    userEvent.type(screen.getByPlaceholderText("URL"), "https://test.com");
+    userEvent.type(screen.getByPlaceholderText("Author"), "Test Author");
+
+    // Click the Save button
+    userEvent.click(screen.getByText("save"));
+
+    // Ensure that the createNote function was called with the correct data
+    expect(createNote).toHaveBeenCalledTimes(1);
+    expect(createNote).toHaveBeenCalledWith({
+      title: "Test Blog",
+      author: "Test Author",
+      url: "https://test.com",
+      likes: 0,
+    });
+  });
+  it("Handle liking", async () => {
+    const handleLikeing = jest.fn(); // Create a mock function
+
+    render(
+      <Note
+        handleLikeing={handleLikeing} // Pass the mock function as a prop
+        note={sampleNote}
+        blogs={sampleBlogs}
+        setBlogs={setSampleBlogs}
+        user={sampleUser}
+      />
+    );
+
+    const viewButton = screen.getByText("View");
+    fireEvent.click(viewButton); // Simulate a button click
+
+    const likeButton = screen.getByText("Like");
+    fireEvent.click(likeButton); // Simulate a button click
+
+    expect(handleLikeing).toBeCalledTimes(1); // Expect the mock function to be called once
   });
 });

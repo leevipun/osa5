@@ -39,24 +39,30 @@ const NoteForm = ({ setNewBlogForm, setBlogs, setNotification, blogs }) => {
     <div>
       <form onSubmit={addNote}>
         <div>
-          <lable>Title: </lable>
+          <label id="titleInput">Title:</label>
           <input
             value={newBlogTitle}
             onChange={(e) => setNewBlogTitle(e.target.value)}
+            aria-label="'titleInput"
+            placeholder="Title"
           />
         </div>
         <div>
-          <label>URL: </label>
+          <label id="urlInput">URL:</label>
           <input
             value={newBlogUrl}
             onChange={(e) => setNewBlogUrl(e.target.value)}
+            aria-label="urlInput"
+            placeholder="URL"
           />
         </div>
         <div>
-          <label>Author: </label>
+          <label id="authorInput">Author:</label>
           <input
             value={newBlogAuthor}
             onChange={(e) => setNewBlogAuthor(e.target.value)}
+            aria-label="authorInput"
+            placeholder="Author"
           />
         </div>
         <button type="submit">save</button>

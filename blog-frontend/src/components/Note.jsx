@@ -15,7 +15,7 @@ const Note = ({ note, blogs, setBlogs, user }) => {
     marginTop: 5,
   };
 
-  const handleLikeing = async (event) => {
+  const handleLikeing = async () => {
     const updatedBlog = {
       title: note.title,
       author: note.author,
