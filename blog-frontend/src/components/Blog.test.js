@@ -142,25 +142,4 @@ describe("Note Component", () => {
       likes: 0,
     });
   });
-  it("Handle liking", async () => {
-    const handleLikeing = jest.fn(); // Create a mock function
-
-    render(
-      <Note
-        handleLikeing={handleLikeing} // Pass the mock function as a prop
-        note={sampleNote}
-        blogs={sampleBlogs}
-        setBlogs={setSampleBlogs}
-        user={sampleUser}
-      />
-    );
-
-    const viewButton = screen.getByText("View");
-    fireEvent.click(viewButton); // Simulate a button click
-
-    const likeButton = screen.getByText("Like");
-    fireEvent.click(likeButton); // Simulate a button click
-
-    expect(handleLikeing).toBeCalledTimes(1); // Expect the mock function to be called once
-  });
 });

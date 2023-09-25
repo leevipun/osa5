@@ -95,7 +95,9 @@ const Note = ({ note, blogs, setBlogs, user }) => {
     <div style={blogStyle} className="note">
       <div>
         <p>{`${note.title} By: ${note.author}`}</p>
-        <button onClick={() => handleView()}>{buttonName}</button>
+        <button onClick={() => handleView()} id="view-button">
+          {buttonName}
+        </button>
       </div>
       {showAll && (
         <div>
@@ -103,11 +105,15 @@ const Note = ({ note, blogs, setBlogs, user }) => {
           <p>{`Likes: ${note.likes}`}</p>
           <p>{`User: ${note.user.username}`}</p>
           <div>
-            <button onClick={() => handleLikeing(note.id)}>Like</button>
+            <button onClick={() => handleLikeing(note.id)} id="like-button">
+              Like
+            </button>
           </div>
           <div>
             {acces && (
-              <button onClick={() => handleDelete(note.id)}>Delete</button>
+              <button onClick={() => handleDelete(note.id)} id="delete-button">
+                Delete
+              </button>
             )}
           </div>
         </div>

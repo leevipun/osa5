@@ -45,6 +45,7 @@ const NoteForm = ({ setNewBlogForm, setBlogs, setNotification, blogs }) => {
             onChange={(e) => setNewBlogTitle(e.target.value)}
             aria-label="'titleInput"
             placeholder="Title"
+            id="title"
           />
         </div>
         <div>
@@ -54,6 +55,7 @@ const NoteForm = ({ setNewBlogForm, setBlogs, setNotification, blogs }) => {
             onChange={(e) => setNewBlogUrl(e.target.value)}
             aria-label="urlInput"
             placeholder="URL"
+            id="url"
           />
         </div>
         <div>
@@ -63,9 +65,12 @@ const NoteForm = ({ setNewBlogForm, setBlogs, setNotification, blogs }) => {
             onChange={(e) => setNewBlogAuthor(e.target.value)}
             aria-label="authorInput"
             placeholder="Author"
+            id="author"
           />
         </div>
-        <button type="submit">save</button>
+        <button type="submit" id="Blog-save-button">
+          save
+        </button>
       </form>
       <div>
         <button onClick={() => handleCreationCancel()}>Cancel</button>
