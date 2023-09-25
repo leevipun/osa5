@@ -30,7 +30,7 @@ const App = () => {
     if (user) {
       noteService.getAll().then((blogs) => {
         setBlogs(blogs);
-        console.log(blogs);
+        console.log("blogeja", blogs);
       });
     }
   }, [user]);
@@ -57,6 +57,7 @@ const App = () => {
       setUser(user);
       setUsername("");
       setPassword("");
+      console.log("loggin in...");
       console.log(user.id);
       setNotification(`Wellcome back ${username}!`);
       setTimeout(() => {
@@ -109,7 +110,9 @@ const App = () => {
       {user && (
         <div>
           <p>{user.name} logged in</p>
-          <button onClick={handleLogginOut}>Log out</button>
+          <button onClick={handleLogginOut} id="logout-button">
+            Log out
+          </button>
           <div>
             <button onClick={() => setNewBlogForm(true)} id="newBlogButton">
               Add a new blog
