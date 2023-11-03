@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 import noteServices from "../services/blogs";
+import { useDispatch } from "react-redux";
+import { voteNotification } from "../reducers/NotificationReducer";
 
 const Note = ({ note, blogs, setBlogs, user }) => {
+  const dispatch = useDispatch();
   const [showAll, setShowAll] = useState(false);
   const [buttonName, setButtonName] = useState("View");
   const [acces, setAcces] = useState(false);
@@ -32,6 +35,9 @@ const Note = ({ note, blogs, setBlogs, user }) => {
 
     // Send the network request
     try {
+      dispatch(
+        voteNotification(`Blog ${note.title} by: ${note.author} was voted up!`)
+      );
       const response = await noteServices.update(note.id, updatedBlog);
     } catch (error) {
       console.log(error);

@@ -1,7 +1,14 @@
 import { useState } from "react";
 import noteServices from "../services/blogs";
+import { useDispatch } from "react-redux";
+import {
+  addingNotification,
+  clearNotification,
+  voteNotification,
+} from "../reducers/NotificationReducer";
 
 const NoteForm = ({ setNewBlogForm, setBlogs, setNotification, blogs }) => {
+  const dispatch = useDispatch();
   const [newBlogTitle, setNewBlogTitle] = useState("");
   const [newBlogUrl, setNewBlogUrl] = useState("");
   const [newBlogAuthor, setNewBlogAuthor] = useState("");
@@ -24,11 +31,10 @@ const NoteForm = ({ setNewBlogForm, setBlogs, setNotification, blogs }) => {
 
     noteServices.create(blogObeject).then((returnedNote) => {
       setBlogs(blogs.concat(returnedNote));
-      setNotification(`${newBlogTitle} By: ${newBlogAuthor} is added`);
+      dispatch(
+        addingNotification(`${newBlogTitle} By: ${newBlogAuthor} is added`)
+      );
       setNewBlogForm(false);
-      setTimeout(() => {
-        setNotification(null);
-      }, 3000);
       setNewBlogTitle("");
       setNewBlogUrl("");
       setNewBlogAuthor("");
