@@ -8,7 +8,7 @@ import {
 } from "../reducers/NotificationReducer";
 import { createBlog } from "../reducers/BlogReducer";
 
-const NoteForm = ({ setNewBlogForm }) => {
+const NoteForm = ({ setNewBlogForm, setBlogs, setNotification, blogs }) => {
   const dispatch = useDispatch();
   const [newBlogTitle, setNewBlogTitle] = useState("");
   const [newBlogUrl, setNewBlogUrl] = useState("");
@@ -30,15 +30,17 @@ const NoteForm = ({ setNewBlogForm }) => {
       likes: 0,
     };
 
-    dispatch(createBlog(blogObeject));
-
-    dispatch(
-      addingNotification(`${newBlogTitle} By: ${newBlogAuthor} is added`)
-    );
-    setNewBlogForm(false);
-    setNewBlogTitle("");
-    setNewBlogUrl("");
-    setNewBlogAuthor("");
+    noteServices.create(blogObeject).then((returnedNote) => {
+      setBlogs(blogs.concat(returnedNote));
+      dispatch(createBlog(blogObeject));
+      dispatch(
+        addingNotification(`${newBlogTitle} By: ${newBlogAuthor} is added`)
+      );
+      setNewBlogForm(false);
+      setNewBlogTitle("");
+      setNewBlogUrl("");
+      setNewBlogAuthor("");
+    });
   };
 
   return (
