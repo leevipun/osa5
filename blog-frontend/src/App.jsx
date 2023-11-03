@@ -2,12 +2,16 @@ import { useState, useEffect } from "react";
 import Note from "./components/Note";
 import ErrorNotification from "./components/errorNotification";
 import Footer from "./components/Footer";
-import noteService from "./services/blogs";
+import blogService from "./services/blogs";
 import loginService from "./services/login";
 import Notification from "./components/Notification";
 import NoteForm from "./components/noteForm";
+import { initializeBlogs } from "./reducers/BlogReducer";
+import { useDispatch } from "react-redux";
+import { voteNotification } from "./reducers/NotificationReducer";
 
 const App = () => {
+  const dispatch = useDispatch();
   const [blogs, setBlogs] = useState([]);
   const [errorMessage, setErrorMessage] = useState(null);
   const [username, setUsername] = useState("");
@@ -22,15 +26,18 @@ const App = () => {
       const user = JSON.parse(loggedUserJSON);
       setUser(user);
       console.log(user);
-      noteService.setToken(`${user.token}`);
+      blogService.setToken(`${user.token}`);
     }
   }, []);
 
   useEffect(() => {
     if (user) {
-      noteService.getAll().then((blogs) => {
+      blogService.getAll().then((blogs) => {
         setBlogs(blogs);
         console.log("blogeja", blogs);
+      });
+      blogService.getAll().then((blogs) => {
+        dispatch(initializeBlogs(blogs)), console.log(blogs);
       });
     }
   }, [user]);
@@ -39,10 +46,7 @@ const App = () => {
     setUser(null);
     window.localStorage.clear();
     console.log("loggin out...");
-    setNotification("Succesfully logged out");
-    setTimeout(() => {
-      setNotification(null);
-    }, 3000);
+    dispatch(voteNotification("Succesfully logged out"));
   };
 
   const handleLogin = async (event) => {
@@ -53,7 +57,7 @@ const App = () => {
         password,
       });
       window.localStorage.setItem("loggedNoteappUser", JSON.stringify(user));
-      noteService.setToken(user.token);
+      blogService.setToken(user.token);
       setUser(user);
       setUsername("");
       setPassword("");
